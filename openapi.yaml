@@ -1,6 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Online shop API
+  title: >-
+    Ecommerce REST API
   version: 1.0.0
   description: >-
     A RESTful API that serves as the application tier for a full-stack
@@ -11,7 +12,16 @@ info:
     wishlist, create new orders, browse previous orders, view and update 
     account details, add/delete/update billing and shipping addresses,
     and more.
-   
+
+  servers:
+  - url: https://taliphus.vercel.app
+
+
+  #servers:
+  #- url: http://127.0.0.1:5501
+  #  description: Development server
+  #- url: https://taliphus.vercel.app
+  #  description: Production server
 #*****************************************************************#
 #*****************************************************************# 
 paths:
@@ -38,7 +48,7 @@ paths:
                 password: "passwordabc123"
       responses:
         '200':
-          description: Default error sample response
+          description: Successful login
           content:
             application/json:
               schema:
@@ -1130,10 +1140,10 @@ components:
       examples:
         fullCateogryName:
           summary: filter using a category's full name
-          value: ['computers'] # ?category=computers
+          value: computers # ?category=computers
         partialCateogryName:
           summary: filter using a partial name/substring
-          value: ['ing']
+          value: ing
     
     supplierParam:
       name: supplier
@@ -1145,10 +1155,10 @@ components:
       examples:
         fullSupplierName:
           summary: filter using a supplier's full name
-          value: ['Steuber,%Macejkovic%and%Howe']
+          value: Steuber,%Macejkovic%and%Howe
         partialCateogryName:
           summary: filter using a partial name/substring
-          value: ['mace']
+          value: mace
       
     hideOutOfStockParam:
       name: hideOutOfStock
@@ -1183,7 +1193,7 @@ components:
       description: only show products that cost at least this much.
       required: false
       schema:
-        type: integer
+        type: decimal
       example: 23.44
     
     maxPriceParam:
@@ -1192,7 +1202,7 @@ components:
       description: only show products that cost less than this value
       required: false
       schema:
-        type: integer
+        type: decimal
       example: 23.44
       
     productIdQueryParam:
