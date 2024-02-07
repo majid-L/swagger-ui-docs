@@ -15,13 +15,8 @@ info:
 
 servers:
 - url: https://taliphus.vercel.app
+  description: Production server
 
-
-  #servers:
-  #- url: http://127.0.0.1:5501
-  #  description: Development server
-  #- url: https://taliphus.vercel.app
-  #  description: Production server
 #*****************************************************************#
 #*****************************************************************# 
 paths:
