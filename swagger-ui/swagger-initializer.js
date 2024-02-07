@@ -1,3 +1,8 @@
+function customPlugin() {
+  document.getElementById("swagger-ui").innerHTML = '<img src="swagger-ui/logo.svg">';
+  console.log(document.querySelectorAll("div.renderedMarkdown"))
+}
+
 window.onload = function() {
   //<editor-fold desc="Changeable Configuration Block">
 
@@ -11,9 +16,16 @@ window.onload = function() {
       SwaggerUIStandalonePreset
     ],
     plugins: [
+      customPlugin,
       SwaggerUIBundle.plugins.DownloadUrl
     ],
-    layout: "StandaloneLayout"
+    layout: "StandaloneLayout",
+    //withCredentials: true,
+    requestInterceptor: (request) => {
+      //request.credentials = 'include';
+      request.headers.authorization = "swagger ui";
+      return request;
+    }
   });
 
   //</editor-fold>
