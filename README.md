@@ -6,6 +6,9 @@ This repository contains a Swagger UI interface that documents one of my REST AP
 
 <img src="yaml.png" width=400>
 
+## OpenAPI specification
+[API definition](openapi.yaml)
+
 ## Full stack application
 Use this link to visit the actual full-stack e-commerce application:
 
