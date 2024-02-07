@@ -430,6 +430,7 @@ paths:
     description: Allows customer to view previous orders or to create a new order.
     parameters:
       - $ref: '#/components/parameters/customerIdParam'
+      - $ref: '#/components/parameters/productIdQueryParam'
     get:
       summary: Get customer's orders.
       description: >-
@@ -498,7 +499,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/customerIdParam'
       - $ref: '#/components/parameters/orderIdParam'
-      - $ref: '#/components/parameters/productIdQueryParam'
     get:
       summary: Get single order.
       description: Get all data about a specific order.
@@ -1208,7 +1208,6 @@ components:
       required: false
       schema:
         type: integer
-      example: 23 # ?productId=23
       
     formatParam:
       name: format
