@@ -521,7 +521,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/customerIdParam'
     get:
-      summary: Get all reviews.
+      summary: Get all reviews posted by a customer.
       description: Get a paginated list of reviews.
       operationId: get_reviews_by_customer
       responses:
@@ -869,7 +869,7 @@ components:
     SingleOrder:
       type: object
       allOf:
-        - $ref: SingleOrderBase
+        - $ref: '#/components/schemas/SingleOrderBase'
         - type: object
           properties:
             billingAddress:
