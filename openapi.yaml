@@ -112,7 +112,7 @@ paths:
                   msg:
                     type: string
               example:
-                  msg: "Andrddeane36 is now logged out."
+                  msg: "Successfully logged out."
         '401':
           $ref: '#/components/responses/Unauthenticated'
       tags:
@@ -134,7 +134,7 @@ paths:
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/categoryParam'
         - $ref: '#/components/parameters/supplierParam'
-        - $ref: '#/components/parameters/sortByParam'
+        - $ref: '#/components/parameters/orderByParam'
         - $ref: '#/components/parameters/orderParam'
         - $ref: '#/components/parameters/hideOutOfStockParam'
         - $ref: '#/components/parameters/minPriceParam'
@@ -142,37 +142,7 @@ paths:
       operationId: get_products
       responses:
         '200':
-          description: paginated list of products
           $ref: '#/components/responses/ProductsResponse'
-        '400':
-          description: bad request caused by invalid query parameters containing invalid data types or column names.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InvalidQuery'
-      tags:
-        - Products
-        
-#*****************************************************************# 
-  /api/products/bestsellers:
-    summary: Returns list of bestselling products.
-    description: Allow customer to view the most frequently ordered products.
-    get:
-      summary: Get list of bestselling products.
-      description: >-
-        Get list of products that have been ordered the most. Excludes products
-        that have 0 orders.
-      parameters:
-        - $ref: '#/components/parameters/pageParam'
-        - $ref: '#/components/parameters/limitParam'
-      operationId: get_bestsellers
-      responses:
-        '200': 
-          description: list of bestsellers
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/BestsellersResponse'
       tags:
         - Products
         
@@ -186,19 +156,16 @@ paths:
       summary: Get single product by id.
       description: >-
         Includes all of the product's data, including average rating, total
-        ratings, total orders
+        ratings, total orders, and more.
       operationId: get_product_by_id
       responses:
         '200':
-          description: get single product
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/SingleProductResponse'
+          $ref: '#/components/responses/SingleProductResponse'
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
         - Products
+
 #*****************************************************************# 
   /api/products/{productId}/reviews:
     summary: Returns list of all reviews for a single product.
@@ -211,11 +178,9 @@ paths:
       responses:
         '200':
           description: paginated list of products
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/ReviewsResponse'
+          $ref: '#/components/responses/ReviewsResponse'
         '404':
+          description: Not found
           $ref: '#/components/responses/NotFound'
       tags:
         - Reviews
@@ -473,11 +438,7 @@ paths:
       operationId: get_orders
       responses:
         '200':
-          description: returns list of customer's orders
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/OrdersResponse'
+          $ref: '#/components/responses/OrdersResponse'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -494,43 +455,7 @@ paths:
       operationId: create_order
       responses:
         '201':
-          description: successful creation of a new order
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SingleOrder'
-              example:
-                id: 23
-                customerId: 1
-                billingAddressId: 1
-                shippingAddressId: 1,
-                status: completed
-                createdAt: "2023-08-01T23:54:44.756Z"
-                billingAddress:
-                  id": 1
-                  addressLine1": "321 Hyatt Green"
-                  addressLine2: "Apt. 843"
-                  city": "Grant Hill"
-                  county": "Worcestershire"
-                  postcode: "MZ3 1XS"
-                shippingAddress:
-                  id": 1
-                  addressLine1": "321 Hyatt Green"
-                  addressLine2: "Apt. 843"
-                  city": "Grant Hill"
-                  county": "Worcestershire"
-                  postcode: "MZ3 1XS"
-                orderItems:
-                  - quantity: 3
-                    product:
-                      id: 12
-                      name: charging cable
-                      description: premium cable made from cheap materials
-                      price: '36.20'
-                      stock: 15
-                      categoryName: Electronics
-                      supplierName: Kryden Industries
-                      thumbnail: https://loremflickr.com/647266532-12765
+          $ref: '#/components/responses/NewOrderResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -601,11 +526,7 @@ paths:
       operationId: get_reviews_by_customer
       responses:
         '200':
-          description: returns list of a single customer's reviews
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/ReviewsResponse'
+          $ref: '#/components/responses/ReviewsResponse'
         '404':
           $ref: '#/components/responses/NotFound'
       tags:
@@ -742,27 +663,6 @@ paths:
                 $ref: '#/components/responses/ReviewsResponse'
       tags:
         - Reviews
-
-#*****************************************************************# 
-  /api/reviews/{reviewId}:
-    summary: Returns single review.
-    parameters:
-      - $ref: '#/components/parameters/reviewIdParam'
-    get:
-      summary: Get single review.
-      description: Returns a single review object, matching the provided id.
-      operationId: get_review_by_id
-      responses:
-        '200':
-          description: returns all relevant data for a single review.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Review'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      tags:
-        - Reviews
     post:
       summary: Post a new review.
       description: Allows customer to post a new review for an item they have previously purchased and not yet reviews.
@@ -792,6 +692,27 @@ paths:
                     $ref: '#/components/schemas/Review'
         '400':
           $ref: '#/components/responses/BadRequest'
+      tags:
+        - Reviews
+
+#*****************************************************************# 
+  /api/reviews/{reviewId}:
+    summary: Returns single review.
+    parameters:
+      - $ref: '#/components/parameters/reviewIdParam'
+    get:
+      summary: Get single review.
+      description: Returns a single review object, matching the provided id.
+      operationId: get_review_by_id
+      responses:
+        '200':
+          description: returns all relevant data for a single review.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          $ref: '#/components/responses/NotFound'
       tags:
         - Reviews
     put:
@@ -862,16 +783,21 @@ components:
       properties:
         addressLine1:
           type: string
+          example: 123 Fake Street
         addressLine2:
           type: string
           nullable: true
+          example: Flat 12
         city:
           type: string
+          example: Kanzua
         county:
           type: string
           nullable: true
+          example: Narnborough
         postcode:
           type: string
+          example: NN12 4FS
           
     Login:
       type: object
@@ -886,40 +812,59 @@ components:
       properties:
         username:
           type: string
+          example: <ENTER_UNIQUE_USERNAME>
         password:
           type: string
+          example: password123abc
         name:
           type: string
+          example: Marcus Boone
         email:
           type: string
+          example: boone@raza.net
         phone:
           type: string
+          example: "+44 0776527762"
         avatar:
           type: string
+          example: null
   
     SingleOrderBase:
       type: object
       properties:
         id:
           type: integer
+          example: 322
         customerId:
           type: integer
+          example: 2
         billingAddressId:
           type: integer
+          example: 12
         shippingAddressId:
           type: integer
+          example: 12
         status:
           type: string
+          example: completed
+        paymentMethod:
+          type: string
+          enum: [Card, PayPal, Klarna]
         createdAt:
           type: string
+          example:  "2024-02-07T04:19:59.667Z"
         shippingAddress:
-          $ref: '#/components/schemas/Address'
-        billingAddress:
           $ref: '#/components/schemas/Address'
         orderItems:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
+            type: object
+            properties:
+              quantity:
+                type: integer
+                example: 3
+              product:
+                $ref: '#/components/schemas/ProductShort'
     
     SingleOrder:
       type: object
@@ -929,26 +874,29 @@ components:
           properties:
             billingAddress:
               $ref: '#/components/schemas/Address'
-    
+
     Orders:
       type: object
       properties:
         id:
           type: integer
+          example: 1
         name:
           type: string
+          example: Alex Nes
         username:
           type: string
+          example: alexnes
         orders:
           type: array
           items:
             $ref: '#/components/schemas/SingleOrderBase'
-              
-    Product:
+
+    ProductShort:
       type: object
       properties:
         id:
-          type: integer
+          type: number
           example: 1
         name:
           type: string
@@ -970,36 +918,63 @@ components:
           example: Lectronics LTD
         thumbnail:
           type: string
-          example: www.thumbnails.com/1
+          example: www.thumbnails.com/1       
+
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/ProductShort'
+        - type: object
+          properties:
+            numOfTimesOrdered:
+              type: integer
+              example: 10
+            totalUnitsOrdered:
+              type: integer
+              example: 23
+            numOfReviews:
+              type: integer
+              example: 5
+            averageRating:
+              type: string
+              example: "2.3"
     
     Customer:
       type: object
       properties:
         id:
           type: number
+          example: 1
         name:
           type: string
+          example: Alex Nes
         username:
           type: string
+          example: alexnes33
         password:
           type: string
           enum: ["**********"]
         email:
           type: string
+          example: cdweller@vg.co.uk
         joinDate:
           type: string
+          example: "2023-09-06T22:04:58.634Z"
         phone:
           type: string
           nullable: true
+          example: null
         billingAddressId:
           type: integer
           nullable: true
+          example: 2
         shippingAddressId:
           type: integer
           nullable: true
+          example: 2
         avatar:
           type: string
           nullable: true
+          example: null
     
     CustomerWithAddresses:
       allOf:
@@ -1085,31 +1060,57 @@ components:
       properties:
         page:
           type: integer
+          example: 1
         count:
           type: integer
+          example: 25
         totalResults:
           type: integer
+          example: 50
           
     Review:
       type: object
       properties:
         id:
           type: integer
+          example: 1
         customerId:
           type: integer
+          example: 1
         productId:
           type: integer
+          example: 12
+        orderId:
+          type: integer
+          example: 32
         title:
           type: string
+          example: Great product! Highly recommended
         body:
           type: string
+          example: Works as expected. Good value for money. Five stars!
         recommend:
           type: boolean
           nullable: true
+          example: true
         rating:
           type: integer
+          example: 3
         createdAt:
           type: string
+          example: '2022-08-23T06:38:04.750Z'
+        customer:
+          type: object
+          properties:
+            username:
+              type: string
+              example: alexnes33
+            avatar:
+              type: string
+              example: avatars.com/thumbnails/23
+        product:
+          $ref: '#/components/schemas/ProductShort'
+
             
 #*****************************************************************# 
   parameters:
@@ -1139,38 +1140,20 @@ components:
     categoryParam:
       name: category
       in: query
-      description: filter results by category, either using the category's full name or a partial string.
+      description: filter results by category
       required: false
       schema:
         type: string
-      examples:
-        noFilter:
-          summary: no filter
-          value: ""
-        fullCateogryName:
-          summary: filter using a category's full name
-          value: computers # ?category=computers
-        partialCateogryName:
-          summary: filter using a partial name/substring
-          value: ing
+        enum: [Consumables, Replicas, Exoskeletons, Prototypes, Cybernetics, Components, Upgrades, Junk,]
     
     supplierParam:
       name: supplier
       in: query
-      description: filter results by supplier, either using the supplier's full name or a partial string.
+      description: filter results by supplier
       required: false
       schema:
         type: string
-      examples:
-        noFilter:
-          summary: no filter
-          value: ""
-        fullSupplierName:
-          summary: filter using a supplier's full name
-          value: Steuber,%Macejkovic%and%Howe
-        partialCateogryName:
-          summary: filter using a partial name/substring
-          value: mace
+        enum: [Novina, Mikkei Combine, Sirta Foundation, Ferrous Corp, Volkov-Rusi, G & B Supplies]
       
     hideOutOfStockParam:
       name: hideOutOfStock
@@ -1179,16 +1162,17 @@ components:
       required: false
       schema:
         type: string
+        enum: ["true", "false"]
       example: true
       
-    sortByParam:
-      name: sortBy
+    orderByParam:
+      name: orderBy
       in: query
-      description: sort results by a specific property (column name)
+      description: order results by a specific property (column name)
       required: false
       schema:
         type: string
-        enum: [id, name, description, price, stock, categoryName, supplierName, thumbnail]
+        enum: [id, name, description, price, stock, categoryName, supplierName, thumbnail, avgRating, bestsellers]
 
     orderParam:
       name: order
@@ -1205,7 +1189,7 @@ components:
       description: only show products that cost at least this much.
       required: false
       schema:
-        type: decimal
+        type: number
       example: 0.01
     
     maxPriceParam:
@@ -1214,7 +1198,7 @@ components:
       description: only show products that cost less than this value
       required: false
       schema:
-        type: decimal
+        type: number
       example: 10000.00
       
     productIdQueryParam:
@@ -1233,7 +1217,7 @@ components:
       required: false
       schema:
         type: string
-        enum: ["basic"]
+        enum: ["basic", "full"]
   
     customerIdParam:
       name: customerId
@@ -1362,13 +1346,21 @@ components:
                 $ref: '#/components/schemas/Address'
               shippingAddress:
                 $ref: '#/components/schemas/Address'
+              paymentMethod:
+                type: string
+                enum: [Card, PayPal, Klarna]
               item:
                 type: object
                 properties:
                   productId:
-                    type: string
+                    type: integer
+                    example: 2
                   quantity:
-                    type: string
+                    type: integer
+                    example: 1
+              total:
+                type: number
+                example: 42.55
 
 #*****************************************************************# 
   responses:
@@ -1391,7 +1383,7 @@ components:
                     type: string
   
     ProductsResponse:
-      description: paginated list of products
+      description: paginated/filtered/sorted list of products
       content:
         application/json:
           schema:
@@ -1434,7 +1426,7 @@ components:
                         - uniqueItems: true
     
     CustomerResponse:
-      description: object returned upon updating a customer's account
+      description: object returned upon creating/updating a customer's account
       content:
         application/json:
           schema:
@@ -1447,52 +1439,61 @@ components:
           schema:
             $ref: '#/components/schemas/Orders'
     
+    NewOrderResponse:
+      description: successful creation of a new order
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SingleOrder'
+          example:
+            id: 23
+            customerId: 1
+            billingAddressId: 1
+            shippingAddressId: 1
+            status: completed
+            paymentMethod: Card
+            total: 108.60
+            createdAt: "2023-08-01T23:54:44.756Z"
+            billingAddress:
+              id: 1
+              addressLine1: "321 Hyatt Green"
+              addressLine2: "Apt. 843"
+              cit": "Grant Hill"
+              county: "Worcestershire"
+              postcode: "MZ3 1XS"
+            shippingAddress:
+              id: 1
+              addressLine1: "321 Hyatt Green"
+              addressLine2: "Apt. 843"
+              city: "Grant Hill"
+              county": "Worcestershire"
+              postcode: "MZ3 1XS"
+            orderItems:
+              - quantity: 3
+                product:
+                  id: 12
+                  name: charging cable
+                  description: premium cable made from cheap materials
+                  price: '36.20'
+                  stock: 15
+                  categoryName: Electronics
+                  supplierName: Kryden Industries
+                  thumbnail: https://loremflickr.com/647266532-12765
+
     CustomerResponseWithAddress:
       description: all of a customer's account information
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/CustomerWithAddresses'
-    
-    BestsellersResponse:
-      description: paginated list of bestselling products
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: '#/components/schemas/Pagination'
-              - type: object
-                properties:
-                  bestSellers:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Product'
-                        - minItems: 0
-                        - uniqueItems: true
-                        - type: object
-                          properties:
-                            numOfTimesOrdered:
-                              type: integer
-                            totalUnitsOrdered:
-                              type: integer
-                            averageRating:
-                              type: integer
-      
+       
     SingleProductResponse:
       description: single product by id
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/Product'
-              - type: object
-                properties:
-                  totalRatings: 
-                    type: integer
-                  numOfTimesOrdered:
-                    type: integer
-    
+            $ref: '#/components/schemas/Product'
+               
     ReviewsResponse:
       description: list of reviews
       content:
@@ -1524,6 +1525,7 @@ components:
                     enum: [404]
                   info: 
                     type: string
+                    enum: ["Not found"]
     
     Unauthorised:
       description: unauthorised action on a protected route, such as attempting to access or modify another customer's data
@@ -1608,3 +1610,4 @@ components:
                     enum: [400]
                   info: 
                     type: string
+                    example: Bad request
